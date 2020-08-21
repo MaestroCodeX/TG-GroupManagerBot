@@ -53,8 +53,7 @@ class customClient(Client):
     def loadAdmin(self):
         staffdb = self.connection["stafflist"]
         cursor = staffdb.find({})
-        stafflist = []
-        self.admins = []
+        self.admins = [self.CREATOR_ID]
         for document in cursor:
             if document['id'] not in self.admins:
                 self.admins.append(document['id'])

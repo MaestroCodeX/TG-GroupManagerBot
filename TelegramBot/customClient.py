@@ -2,7 +2,7 @@ from pyrogram import Client, Message
 from pyrogram import __version__
 from pyrogram.api.all import layer
 import configparser
-import pymongo
+from pymongo import MongoClient
 from pymongo.database import Database
 from functools import wraps
 
@@ -28,9 +28,10 @@ class customClient(Client):
         print('Database settings...')
         config = configparser.ConfigParser()
         config.read('TelegramBot/config.ini')
-        if 'database' in config.sections() and 'link' in config['database'] and 'collection' in config['database']:
-            client = pymongo.MongoClient(config['database']['link'], retryWrites=False)
-            self.connection = client[config['database']['collection']]
+        if 'database' in config.sections() and 'link' in config['database'] and 'dbname' in config['database']:
+            print(config['database']['link'])
+            client = MongoClient(config['database']['link'])
+            self.connection = client[config['database']['dbname']]
         else:
             print("config.ini wrong, need [database] section with under link and collection values.")
             exit(0)
@@ -61,3 +62,9 @@ class customClient(Client):
     def is_admin(self, message) -> bool:
         return message.from_user.id in self.admins
         
+    #check if there is an admin inside a channel
+    async def adminInChannel(self, m):
+        channelStaff = await self.get_chat_members(m.chat.id, filter="administrators")
+        staffId = [x.user.id for x in channelStaff if x.user.id in self.admins]
+        if len(staffId) > 0: return True
+        return False

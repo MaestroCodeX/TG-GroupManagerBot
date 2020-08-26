@@ -1,4 +1,4 @@
-from pyrogram import Client, Message
+from pyrogram import Client, Message, Filters, InlineKeyboardButton
 from pyrogram import __version__
 from pyrogram.api.all import layer
 import configparser
@@ -25,11 +25,10 @@ class customClient(Client):
     async def start(self):
         await super().start()
 
-        print('Database settings...')
+        print('Connecting the DB...')
         config = configparser.ConfigParser()
         config.read('TelegramBot/config.ini')
         if 'database' in config.sections() and 'link' in config['database'] and 'dbname' in config['database']:
-            print(config['database']['link'])
             client = MongoClient(config['database']['link'])
             self.connection = client[config['database']['dbname']]
         else:
@@ -68,3 +67,22 @@ class customClient(Client):
         staffId = [x.user.id for x in channelStaff if x.user.id in self.admins]
         if len(staffId) > 0: return True
         return False
+    
+    def invertCBQBool(self, inlineKeyboardButton):
+        if inlineKeyboardButton.callback_data.split(' ')[-1] == "false":
+            newcallback = inlineKeyboardButton.callback_data.rsplit(' ', 1)[
+                0] + " true"
+            newbutton = inlineKeyboardButton.text.rsplit(' ', 1)[0] + " ✅"
+            return InlineKeyboardButton(newbutton, newcallback)
+        else:
+            newcallback = inlineKeyboardButton.callback_data.rsplit(' ', 1)[
+                0] + " false"
+            newbutton = inlineKeyboardButton.text.rsplit(' ', 1)[0] + " ❌"
+            return InlineKeyboardButton(newbutton, newcallback)
+
+    @staticmethod
+    def CBFilter(data):
+        return Filters.create(
+            lambda flt, query: flt.data.lower() == query.data.split(' ', 1)[0].lower() and query.message.from_user.is_self,
+            data=data  # "data" kwarg is accessed with "flt.data" above
+    )

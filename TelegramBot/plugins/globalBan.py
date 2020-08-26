@@ -9,7 +9,6 @@ from ..customClient import customClient
 async def globalbanCommand(client : customClient, m : Message):
     if client.is_admin(m):
         try:
-            print(m.command)
             if len(m.command) > 1:
                 peer = await client.resolve_peer(m.command[1])
                 if type(peer) is types.input_peer_user.InputPeerUser:

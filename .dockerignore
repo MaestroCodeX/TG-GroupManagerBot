@@ -1,0 +1,4 @@
+TelegramBot/plugins/__pycache__
+TelegramBot/lib/__pycache__
+.gitignore
+LICENSE

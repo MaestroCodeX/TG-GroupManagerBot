@@ -1,7 +1,7 @@
-from pyrogram import Filters
+from pyrogram import filters
 from ..customClient import customClient
 
-@customClient.on_message(Filters.command("up", [".","/","!"]) & Filters.group)
+@customClient.on_message(filters.command("up", [".","/","!"]) & filters.group)
 async def PermFissaMod(client : customClient, message):
     if message.reply_to_message != None:
         permission = client.connection["userPermission"]

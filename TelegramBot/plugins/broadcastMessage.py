@@ -1,9 +1,10 @@
-from pyrogram import Filters, Message, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from ..customClient import customClient
 
 # Broadcast Command
-@customClient.on_message(Filters.command("broadcast") & Filters.private)
-async def broadcastCommand(client : customClient, m : Message):
+@customClient.on_message(filters.command("broadcast") & filters.private)
+async def broadcastCommand(client : customClient, m):
     if client.is_admin(m) and m.reply_to_message:
         message = m.reply_to_message
         buttons = InlineKeyboardMarkup(

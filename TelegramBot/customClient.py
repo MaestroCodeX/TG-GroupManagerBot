@@ -1,6 +1,7 @@
-from pyrogram import Client, Message, Filters, InlineKeyboardButton
+from pyrogram import Client, filters
+from pyrogram.types import Message, InlineKeyboardButton
 from pyrogram import __version__
-from pyrogram.api.all import layer
+from pyrogram.raw.all import layer
 import configparser
 from pymongo import MongoClient
 from pymongo.database import Database
@@ -65,24 +66,23 @@ class customClient(Client):
     async def adminInChannel(self, m):
         channelStaff = await self.get_chat_members(m.chat.id, filter="administrators")
         staffId = [x.user.id for x in channelStaff if x.user.id in self.admins]
-        if len(staffId) > 0: return True
-        return False
+        return len(staffId) > 0
     
     def invertCBQBool(self, inlineKeyboardButton):
         if inlineKeyboardButton.callback_data.split(' ')[-1] == "false":
             newcallback = inlineKeyboardButton.callback_data.rsplit(' ', 1)[
                 0] + " true"
             newbutton = inlineKeyboardButton.text.rsplit(' ', 1)[0] + " ✅"
-            return InlineKeyboardButton(newbutton, newcallback)
         else:
             newcallback = inlineKeyboardButton.callback_data.rsplit(' ', 1)[
                 0] + " false"
             newbutton = inlineKeyboardButton.text.rsplit(' ', 1)[0] + " ❌"
-            return InlineKeyboardButton(newbutton, newcallback)
+
+        return InlineKeyboardButton(newbutton, newcallback)
 
     @staticmethod
     def CBFilter(data):
-        return Filters.create(
+        return filters.create(
             lambda flt, query: flt.data.lower() == query.data.split(' ', 1)[0].lower() and query.message.from_user.is_self,
             data=data  # "data" kwarg is accessed with "flt.data" above
     )

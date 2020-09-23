@@ -1,12 +1,12 @@
-from pyrogram import Filters, Message
+from pyrogram import filters
 from pyrogram.errors import RPCError
-from pyrogram.api import types
+from pyrogram.raw import types
 
 from ..customClient import customClient
 
 # Global Ban Function
-@customClient.on_message(Filters.command("globalban"))
-async def globalbanCommand(client : customClient, m : Message):
+@customClient.on_message(filters.command("globalban"))
+async def globalbanCommand(client : customClient, m):
     if client.is_admin(m):
         try:
             if len(m.command) > 1:
@@ -23,8 +23,8 @@ async def globalbanCommand(client : customClient, m : Message):
 
 
 # Global Unban Function
-@customClient.on_message(Filters.command("globalunban"))
-async def globalUnban(client : customClient, m : Message):
+@customClient.on_message(filters.command("globalunban"))
+async def globalUnban(client : customClient, m):
     if client.is_admin(m):
         try:
             if m.reply_to_message:

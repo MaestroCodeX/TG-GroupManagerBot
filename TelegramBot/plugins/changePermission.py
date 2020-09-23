@@ -1,7 +1,8 @@
-from pyrogram import Filters, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from ..customClient import customClient
 
-@customClient.on_message(Filters.group & Filters.command(["permissions", "permessi"], ['/', '.']))
+@customClient.on_message(filters.group & filters.command(["permissions", "permessi"], ['/', '.']))
 async def openPermSettings(client, message):
     user = await client.get_chat_member(message.chat.id, message.from_user.id)
     if user.can_promote_members and message.reply_to_message != None:
@@ -81,8 +82,7 @@ def checkEmpty(dbcon, id):
 
 
 def createNewIstanceOfUser(userID, groupId):
-    obj = {
+    return {
         'userID': userID,
         'pinPerm': [groupId]
     }
-    return obj
